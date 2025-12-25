@@ -1,109 +1,62 @@
-SYSTEM ARCHITECTURE FLOWCHART:-
+1. Overall System Architecture Flowchart
+   
+   flowchart TD
+    A[User / Customer] -->|Scan QR Code| B[Web App<br/>(Mobile Browser)]
+    B -->|Join Queue Request| C[Backend API Server]
+
+    C --> D[(Queue Database)]
+    D --> C
+
+    C --> E[Waiting Time Engine<br/>(Adaptive ML / Stats)]
+    E --> C
+
+    C -->|Live Status & ETA| B
+    B -->|Notifications| A
+   
+Users scan a QR code to join a queue via a web app. The backend manages queue data, predicts waiting time, and sends live updates back to users.
 
 
-[ User (Customer) ]
-        |
-        | Scan QR Code
-        v
-[ Web App (Browser) ]
-        |
-        | Join Queue Request
-        v
-[ Backend API Server ]
-(FastAPI / Node)
-        |
-        | Store / Update Queue Data
-        v
-[ Database ]
-(Queue State, Counters,
- Service Time Stats)
-        |
-        | Real-Time Queue Updates
-        v
-[ Waiting Time Predictor ]
-(Simple ML / Statistical Model)
-        |
-        | Estimated Wait Time
-        v
-[ Backend API Server ]
-        |
-        | Live Status + Notifications
-        v
-[ User Web Interface ]
-("Your turn in 12 mins")
+2. Business & Staff Side Flowchart
+   
+   flowchart TD
+    BA[Business Admin] -->|Register Business| AD[Admin Dashboard]
+    AD -->|Create Counters| QR[QR Code Generator]
+    QR -->|Print & Place| SC[Service Counter]
+
+    ST[Counter Staff] -->|Serve Next User| SD[Staff Dashboard]
+    SD -->|Update Queue Progress| API[Backend API Server]
+   
+Businesses register and create service counters. QR codes are placed at counters. Staff update the queue as customers are served, keeping the system live and accurate.
 
 
+3. Analytics & Queue Optimization Flowchart
+   
+   flowchart TD
+    QD[(Queue History Data)] --> AE[Analytics Engine]
+
+    AE --> PH[Peak Hours Analysis]
+    AE --> WT[Average Wait Time]
+    AE --> CT[Counter Performance]
+
+    PH --> ID[Admin Insights Dashboard]
+    WT --> ID
+    CT --> ID
+   
+Historical queue data is analyzed to identify peak hours, service efficiency, and bottlenecks. Insights help businesses optimize staffing and operations.
 
 
+5. Privacy & Safety Layer Flowchart
+   
+   flowchart TD
+    U[User] --> QR[QR Code Access]
 
+    QR --> AN[Anonymous Session]
+    AN --> QA[Queue Access]
 
-BUSINESS SIDE FLOW:-
+    QA --> NP[No Personal Data Stored]
+    QA --> NC[No Camera / No Tracking]
 
-
-[ Business Admin ]
-        |
-        | Register Business
-        v
-[ Admin Dashboard ]
-        |
-        | Create Counters
-        | Generate QR Codes
-        v
-[ Printed QR at Counter ]
-
-
-
-
-
-STAFF SIDE FLOW:-
-
-
-[ Counter Staff ]
-        |
-        | Serve Next User
-        v
-[ Staff Dashboard ]
-        |
-        | Click "Next Served"
-        v
-[ Backend API ]
-        |
-        | Update Queue Progress
-        v
-[ Waiting Time Predictor ]
-        |
-        | Recalculate ETA
-        v
-[ Users Get Updated Status ]
-
-
-
-
-
-
-ANALYTICS & OPTIMIZATION FLOW:-
-
-
-[ Queue History Data ]
-        |
-        v
-[ Analytics Engine ]
-        |
-        | Peak Hours
-        | Avg Service Time
-        | Queue Length Trends
-        v
-[ Admin Insights Dashboard ]
-
-
-
-
-
-PRIVACY & SAFETY LAYER (ALWAYS ACTIVE):-
-
-
-- No Login Required
-- No Personal Data Stored
-- QR-based Anonymous Access
-- No Camera / No Face Data
-
+    NP --> SAFE[Privacy-First System]
+    NC --> SAFE
+   
+The system is designed with privacy as a core principle. Users access queues anonymously using QR codes, with no personal data, cameras, or tracking involved.
