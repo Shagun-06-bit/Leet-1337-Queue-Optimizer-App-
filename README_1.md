@@ -65,7 +65,7 @@ The system architecture is modular, allowing quick prototyping within the hackat
 
 ---
 
-## Scalability & Future Scope (Growth Potential)
+## Scalability & Future Scope (Growth Potential for Round 2)
 - AI-based wait-time and crowd prediction
 - WhatsApp/SMS notifications for users
 - Multi-language interface for wider accessibility
