@@ -138,36 +138,37 @@
         6. Reviews analytics regularly 
         7. Optimizes staffing & flow
 
-## 5. COMPLETE OPERATION FLOW (START TO END)
+## 5. COMPLETE OPERATION FLOW (START TO END
+
    
-   Step 1: Setup (One-Time) 
+    1: Setup (One-Time) 
        • Business registers 
        • Counters created 
        • QR codes printed and placed
    
-   Step 2: Daily Operation 
+    2: Daily Operation 
        • Staff logs in 
        • Counter activated 
        • Customers scan QR and join queue
    
-   Step 3: Live Queue Handling 
+    3: Live Queue Handling 
        • Customers track status 
        • Staff serves customers 
        • System updates wait times
    
-   Step 4: Notifications 
+    4: Notifications 
        • Users receive alerts 
        • Crowd is reduced
    
-   Step 5: Review & Improve 
+    5: Review & Improve 
        • Admin checks reports 
        • Adjusts staffing or timing
    
 ## 7. WHY THIS STRUCTURE WORKS
    
-- Simple for users 
-- Minimal effort for staff 
-- Valuable insights for admin 
-- No privacy risk 
-- Easy to scale 
-- Production-ready
+     - Simple for users 
+     - Minimal effort for staff 
+     - Valuable insights for admin 
+     - No privacy risk 
+     - Easy to scale 
+     - Production-ready
