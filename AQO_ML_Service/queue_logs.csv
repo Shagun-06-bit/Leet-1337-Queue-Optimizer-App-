@@ -1,0 +1,6 @@
+queue_length,active_counters,service_time,time_of_day,wait_time
+12,2,5,10,30
+8,1,6,11,48
+20,3,4,14,28
+5,1,5,9,25
+15,2,6,18,45
