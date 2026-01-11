@@ -4,7 +4,14 @@ const QueueEntry = require("../models/QueueEntry");
 
 exports.joinQueue = async (req, res) => {
   try {
-    const { queueId } = req.params;
+    const { queueId } = req.body;
+
+    if (!queueId) {
+      return res.status(400).json({
+        message: "queueId is required"
+      });
+    }
+
 
     
     const queue = await Queue.findById(queueId);
