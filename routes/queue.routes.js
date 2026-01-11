@@ -5,6 +5,7 @@ const {
   createQueue,
   getQueues,
   getQueueById,
+  joinQueue,
 } = require("../controllers/queue.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -25,12 +26,17 @@ router.get(
   getQueues
 );
 
+router.post("/join", joinQueue);
 
 router.get(
   "/:queueId",
   authMiddleware,
   getQueueById
 );
+
+
+
+
 
 
 module.exports = router;

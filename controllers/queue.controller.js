@@ -87,9 +87,56 @@ const getQueueById = async (req, res) => {
   }
 };
 
+const joinQueue = async (req, res) => {
+  try {
+    const { queueId } = req.body;
+
+    if (!queueId) {
+      return res.status(400).json({
+        success: false,
+        message: "queueId is required",
+      });
+    }
+
+    const queue = await Queue.findById(queueId);
+
+    if (!queue) {
+      return res.status(404).json({
+        success: false,
+        message: "Queue not found",
+      });
+    }
+
+    // Initialize counters if missing
+    if (!queue.currentToken) queue.currentToken = 0;
+    if (!queue.lastIssuedToken) queue.lastIssuedToken = 0;
+
+    // Issue new token
+    queue.lastIssuedToken += 1;
+    await queue.save();
+
+    const position = queue.lastIssuedToken - queue.currentToken;
+
+    return res.status(200).json({
+      success: true,
+      queueId,
+      tokenNumber: queue.lastIssuedToken,
+      position,
+    });
+  } catch (error) {
+    console.error("Join Queue Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while joining queue",
+    });
+  }
+};
+
+
 
 module.exports = {
   createQueue,
   getQueues,
   getQueueById,
+  joinQueue,
 };
