@@ -221,36 +221,79 @@
     </div>
   </div>
   <script>
-  // Smooth button click effect + delayed navigation
-  const buttons = document.querySelectorAll(".btn");
+  const API_BASE = "https://queue-optimizer-app.onrender.com/api";
 
-  buttons.forEach(btn => {
-    btn.addEventListener("click", (e) => {
+  // Join Queue button
+  const joinBtn = document.querySelector(".btn.user");
+
+  if (joinBtn) {
+    joinBtn.addEventListener("click", async (e) => {
       e.preventDefault();
 
-      // Visual loading effect
-      btn.style.opacity = "0.7";
-      btn.innerHTML = "Loading...";
+      joinBtn.innerText = "Joining...";
+      joinBtn.disabled = true;
 
-      // Navigate after short delay
-      setTimeout(() => {
-        window.location.href = btn.getAttribute("onclick")
-          .match(/'(.*?)'/)[1];
-      }, 700);
+      try {
+        /**
+         * IMPORTANT:
+         * queueId should usually come from:
+         * 1. QR code
+         * 2. URL param (?queueId=xxxx)
+         *
+         * For now, we assume it's in the URL
+         */
+        const urlParams = new URLSearchParams(window.location.search);
+        const queueId = urlParams.get("queueId");
+
+        if (!queueId) {
+          alert("Invalid QR / Queue ID missing");
+          joinBtn.innerText = "Join Queue";
+          joinBtn.disabled = false;
+          return;
+        }
+
+        const response = await fetch(⁠ ${API_BASE}/queues/join/${queueId} ⁠, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to join queue");
+        }
+
+        // Save user queue data
+        localStorage.setItem("queueUser", JSON.stringify({
+          queueId: data.queueId,
+          tokenNumber: data.tokenNumber,
+          position: data.position
+        }));
+
+        // Redirect to user dashboard
+        window.location.href = "user.html";
+
+      } catch (err) {
+        alert(err.message);
+        joinBtn.innerText = "Join Queue";
+        joinBtn.disabled = false;
+      }
     });
-  });
+  }
 
-  // Keyboard accessibility (Enter key)
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      document.querySelector(".btn.staff").click();
-    }
-  });
+  // Staff button → simple redirect (no API here)
+  const staffBtn = document.querySelector(".btn.staff");
+  if (staffBtn) {
+    staffBtn.addEventListener("click", () => {
+      window.location.href = "counterlogin.html";
+    });
+  }
 
-  // Console branding (looks professional)
   console.log(
-    "%cQueueAdmin – Smart Queue Platform",
-    "color:#6366f1;font-size:16px;font-weight:bold;"
+    "%cQueueAdmin – Frontend Connected",
+    "color:#22c55e;font-size:14px;font-weight:bold;"
   );
 </script>
 
