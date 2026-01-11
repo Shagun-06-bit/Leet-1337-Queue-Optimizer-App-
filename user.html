@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Queue Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #c7d2fe, #fdf2f8, #eef2ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #0f172a;
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      width: 420px;
+      padding: 20px;
+    }
+
+    .app {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border-radius: 26px;
+      box-shadow:
+        0 30px 70px rgba(79, 70, 229, 0.25),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      overflow: hidden;
+      animation: slideUp 0.8s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Top Bar */
+    .topbar {
+      padding: 20px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1, #ec4899);
+      color: white;
+      position: relative;
+    }
+
+    .topbar h1 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .topbar p {
+      font-size: 12px;
+      margin-top: 6px;
+      opacity: 0.9;
+    }
+
+    .queue-status {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(6px);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+      70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+    }
+
+    /* Highlight */
+    .highlight {
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .number {
+      font-size: 76px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pop 0.6s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.85); }
+      100% { transform: scale(1); }
+    }
+
+    .label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    .subinfo {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+      margin: 0 20px;
+    }
+
+    /* Actions */
+    .actions {
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    button {
+      padding: 15px;
+      border-radius: 16px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.15);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+    }
+
+    .secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* Settings */
+    .settings {
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    .settings h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #334155;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      margin-top: 10px;
+      outline: none;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      accent-color: #6366f1;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 14px 20px 20px;
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="app">
+
+      <div class="topbar">
+        <h1>ABC Service Center</h1>
+        <p>Counter: General Help Desk · <span id="datetime"></span></p>
+        <div class="queue-status">Queue Open</div>
+      </div>
+
+      <div class="highlight">
+        <div class="number">-</div>
+        <div class="label">Not in queue</div>
+        <div class="subinfo">
+          <span>—</span>
+          <span>—</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="actions">
+        <button class="primary">Join Queue</button>
+        <button class="secondary">Refresh Status</button>
+        <button class="danger">Leave Queue</button>
+      </div>
+
+      <div class="settings">
+        <h3>Notifications</h3>
+        <div class="row">
+          <span>Enable alerts</span>
+          <input type="checkbox" checked />
+        </div>
+        <select>
+          <option>Notify when 3 people left</option>
+          <option>Notify when 2 people left</option>
+          <option>Notify when it's my turn</option>
+        </select>
+        <input type="text" placeholder="Phone or Email (optional)" />
+      </div>
+
+      <div class="footer">
+        No camera used · No personal data stored · Privacy-safe system
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function updateTime() {
+      document.getElementById('datetime').innerText = new Date().toLocaleString();
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    const joinBtn = document.querySelector('.primary');
+    const refreshBtn = document.querySelector('.secondary');
+    const leaveBtn = document.querySelector('.danger');
+    const numberEl = document.querySelector('.number');
+    const labelEl = document.querySelector('.label');
+    const subInfo = document.querySelector('.subinfo');
+
+    let inQueue = false;
+    let position = null;
+
+    function animateNumber() {
+      numberEl.style.animation = 'none';
+      numberEl.offsetHeight;
+      numberEl.style.animation = 'pop 0.6s ease';
+    }
+
+    joinBtn.addEventListener('click', () => {
+      if (!inQueue) {
+        inQueue = true;
+        position = Math.floor(Math.random() * 10) + 3;
+        numberEl.innerText = position;
+        labelEl.innerText = 'Your position in queue';
+        subInfo.innerHTML = `<span>${position - 1} people ahead</span><span>~${position * 2} min wait</span>`;
+        animateNumber();
+      }
+    });
+
+    refreshBtn.addEventListener('click', () => {
+      if (inQueue && position > 1) {
+        position--;
+        numberEl.innerText = position;
+        subInfo.innerHTML = `<span>${position - 1} people ahead</span><span>~${position * 2} min wait</span>`;
+        animateNumber();
+      }
+    });
+
+    leaveBtn.addEventListener('click', () => {
+      if (inQueue) {
+        inQueue = false;
+        position = null;
+        numberEl.innerText = '-';
+        labelEl.innerText = 'Not in queue';
+        subInfo.innerHTML = `<span>—</span><span>—</span>`;
+        animateNumber();
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Counter Staff Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(120deg, #f8fafc, #eef2ff, #f1f5f9);
+      min-height: 100vh;
+      padding: 20px;
+      color: #0f172a;
+    }
+
+    .dashboard {
+      max-width: 1200px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(14px);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #0f172a;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #1e293b;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      color: #334155;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .running { background: #bbf7d0; color: #065f46; }
+    .paused { background: #fde68a; color: #78350f; }
+
+    .big-number {
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .controls button {
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+      color: #0f172a;
+    }
+
+    .controls button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .serve { background: #bae6fd; }
+    .pause { background: #fde68a; }
+    .resume { background: #bbf7d0; }
+    .skip { background: #fecaca; }
+
+    .queue-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .queue-list li {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.7);
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      color: #334155;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .alert.high { background: #fee2e2; color: #7f1d1d; }
+    .alert.warning { background: #fef3c7; color: #78350f; }
+
+    textarea {
+      width: 100%;
+      border-radius: 12px;
+      border: none;
+      padding: 12px;
+      resize: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      background: rgba(255,255,255,0.7);
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Counter Staff Dashboard</h1>
+
+  <div class="dashboard">
+
+    <div class="card">
+      <h2>Counter Status</h2>
+      <div class="status">
+        <span>Counter A</span>
+        <span class="badge running">Running</span>
+      </div>
+      <div class="status">
+        <span>People Waiting</span>
+        <span class="big-number">18</span>
+      </div>
+      <div class="status">
+        <span>Avg. Service Time</span>
+        <span>4 min</span>
+      </div>
+    </div>
+
+    <div class="card controls">
+      <h2>Queue Controls</h2>
+      <button class="serve">Serve Next</button>
+      <button class="pause">Pause Queue</button>
+      <button class="resume">Resume Queue</button>
+      <button class="skip">Skip Entry</button>
+    </div>
+
+    <div class="card">
+      <h2>Current Queue</h2>
+      <ul class="queue-list">
+        <li><span>Position #1</span><span>Waiting: 12 min</span></li>
+        <li><span>Position #2</span><span>Waiting: 9 min</span></li>
+        <li><span>Position #3</span><span>Waiting: 6 min</span></li>
+        <li><span>Position #4</span><span>Waiting: 3 min</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Alerts & Warnings</h2>
+      <div class="alert high">High waiting time detected (over 20 min)</div>
+      <div class="alert warning">Queue overload - consider opening another counter</div>
+    </div>
+
+    <div class="card">
+      <h2>Internal Notes</h2>
+      <textarea rows="6" placeholder="Write internal remarks here...">Short staff today</textarea>
+    </div>
+
+  </div>
+  <script>
+  let peopleWaiting = 18;
+  let avgServiceTime = 4; // minutes
+  let isRunning = true;
+
+  const waitingCount = document.querySelector(".big-number");
+  const statusBadge = document.querySelector(".badge");
+  const queueList = document.querySelector(".queue-list");
+
+  function updateUI() {
+    waitingCount.textContent = peopleWaiting;
+
+    if (isRunning) {
+      statusBadge.textContent = "Running";
+      statusBadge.classList.remove("paused");
+      statusBadge.classList.add("running");
+    } else {
+      statusBadge.textContent = "Paused";
+      statusBadge.classList.remove("running");
+      statusBadge.classList.add("paused");
+    }
+  }
+
+  // Serve Next
+  document.querySelector(".serve").addEventListener("click", () => {
+    if (!isRunning) {
+      alert("Queue is paused!");
+      return;
+    }
+
+    if (peopleWaiting > 0) {
+      peopleWaiting--;
+      queueList.removeChild(queueList.firstElementChild);
+      updateUI();
+    } else {
+      alert("No people in queue");
+    }
+  });
+
+  // Pause Queue
+  document.querySelector(".pause").addEventListener("click", () => {
+    isRunning = false;
+    updateUI();
+  });
+
+  // Resume Queue
+  document.querySelector(".resume").addEventListener("click", () => {
+    isRunning = true;
+    updateUI();
+  });
+
+  // Skip Entry
+  document.querySelector(".skip").addEventListener("click", () => {
+    if (queueList.children.length > 1) {
+      queueList.removeChild(queueList.children[1]);
+      peopleWaiting--;
+      updateUI();
+    } else {
+      alert("No entry to skip");
+    }
+  });
+
+  updateUI();
+</script>
+
+</body>
+</html>

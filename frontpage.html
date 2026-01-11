@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QueueAdmin – Smart Queue Management</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      background: linear-gradient(120deg, #f8fafc, #eef2ff, #f1f5f9);
+      background-size: 300% 300%;
+      animation: gradientMove 15s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f172a;
+      overflow: hidden;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .blob {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%);
+      filter: blur(120px);
+      opacity: 0.4;
+    }
+
+    .blob.one { top: -120px; left: -100px; }
+    .blob.two { bottom: -140px; right: -120px; }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 440px;
+      text-align: center;
+    }
+
+    .brand {
+      font-size: 46px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #6366f1, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      margin-top: 6px;
+      font-size: 15px;
+      color: #475569;
+      margin-bottom: 22px;
+    }
+
+    .features {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .chip {
+      padding: 8px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(10px);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #334155;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+      padding: 34px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+
+    .card h3 {
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-radius: 16px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn.staff {
+      background: linear-gradient(135deg, #bae6fd, #93c5fd);
+      color: #0f172a;
+    }
+
+    .btn.admin {
+      background: linear-gradient(135deg, #ddd6fe, #c7d2fe);
+      color: #0f172a;
+    }
+
+    .btn.register {
+      background: linear-gradient(135deg, #bbf7d0, #86efac);
+      color: #064e3b;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .or-divider::before,
+    .or-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #cbd5f5, transparent);
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #cbd5f5, transparent);
+      margin: 20px 0;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    @media(max-width:480px) {
+      .container { width: 92%; }
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+
+  <div class="container">
+    <div class="brand">QueueAdmin</div>
+    <div class="tagline">Next-Gen Smart Queue Management Platform</div>
+
+    <div class="features">
+      <div class="chip"><i class='bx bx-time'></i> Faster Service</div>
+      <div class="chip"><i class='bx bx-qr'></i> QR Based</div>
+      <div class="chip"><i class='bx bx-line-chart'></i> Live Insights</div>
+      <div class="chip"><i class='bx bx-shield'></i> Secure</div>
+    </div>
+
+    <div class="card">
+      <h3>Choose Login Type</h3>
+
+      <button class="btn staff" onclick="location.href='counter.html'">
+        <i class='bx bx-user'></i> Counter Staff Login
+      </button>
+
+      <button class="btn admin" onclick="location.href='admin.html'">
+        <i class='bx bx-lock-alt'></i> Admin Login
+      </button>
+
+      <div class="or-divider">or</div>
+
+      <button class="btn register" onclick="location.href='registration.html'">
+        <i class='bx bx-user-plus'></i> Register
+      </button>
+
+      <div class="divider"></div>
+
+      <p style="font-size:13px;color:#475569">
+        Designed for banks, hospitals, government offices & enterprises
+      </p>
+    </div>
+
+    <div class="footer">
+      ©️ 2025 QueueAdmin • Built for efficiency
+    </div>
+  </div>
+  <script>
+  // Smooth button click effect + delayed navigation
+  const buttons = document.querySelectorAll(".btn");
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      // Visual loading effect
+      btn.style.opacity = "0.7";
+      btn.innerHTML = "Loading...";
+
+      // Navigate after short delay
+      setTimeout(() => {
+        window.location.href = btn.getAttribute("onclick")
+          .match(/'(.*?)'/)[1];
+      }, 700);
+    });
+  });
+
+  // Keyboard accessibility (Enter key)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      document.querySelector(".btn.staff").click();
+    }
+  });
+
+  // Console branding (looks professional)
+  console.log(
+    "%cQueueAdmin – Smart Queue Platform",
+    "color:#6366f1;font-size:16px;font-weight:bold;"
+  );
+</script>
+
+</body>
+</html>

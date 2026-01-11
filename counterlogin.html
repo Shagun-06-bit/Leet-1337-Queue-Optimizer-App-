@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Counter Staff Login | QueueAdmin</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(120deg,#f8fafc,#eef2ff,#f1f5f9);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .card{
+      width:100%;
+      max-width:460px;
+      background:rgba(255,255,255,0.75);
+      backdrop-filter:blur(18px);
+      border-radius:22px;
+      padding:32px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.12);
+    }
+    .brand{
+      text-align:center;
+      font-size:28px;
+      font-weight:800;
+      background:linear-gradient(90deg,#6366f1,#818cf8);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:6px;
+    }
+    .subtitle{
+      text-align:center;
+      font-size:14px;
+      color:#475569;
+      margin-bottom:26px;
+    }
+    .group{
+      margin-bottom:14px;
+    }
+    label{
+      font-size:13px;
+      font-weight:600;
+      color:#334155;
+      margin-bottom:6px;
+      display:block;
+    }
+    input,select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #cbd5e1;
+      font-family:inherit;
+      font-size:14px;
+      outline:none;
+    }
+    input:focus,select:focus{
+      border-color:#6366f1;
+    }
+    .btn{
+      margin-top:18px;
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,#6366f1,#818cf8);
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 12px 24px rgba(0,0,0,0.18);
+    }
+    .footer{
+      margin-top:18px;
+      text-align:center;
+      font-size:12px;
+      color:#64748b;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div class="brand">QueueAdmin</div>
+    <div class="subtitle">Counter Staff Login</div>
+
+    <form id="staffLoginForm">
+
+      <div class="group">
+        <label>Business Name</label>
+        <input type="text" placeholder="e.g. City Hospital" required>
+      </div>
+
+      <div class="group">
+        <label>Location</label>
+        <input type="text" placeholder="City / Branch Location" required>
+      </div>
+
+      <div class="group">
+        <label>Select Counter</label>
+        <select required>
+          <option value="">Choose Counter</option>
+          <option>Counter A</option>
+          <option>Counter B</option>
+          <option>Counter C</option>
+          <option>Billing Counter</option>
+        </select>
+      </div>
+
+      <div class="group">
+        <label>Staff Name</label>
+        <input type="text" placeholder="Your Full Name" required>
+      </div>
+
+      <div class="group">
+        <label>Staff ID</label>
+        <input type="text" placeholder="Provided by Admin" required>
+      </div>
+
+      <div class="group">
+        <label>Password</label>
+        <input type="password" placeholder="Password" required>
+      </div>
+
+      <button type="submit" class="btn">
+        <i class='bx bx-log-in'></i> Login to Counter
+      </button>
+
+    </form>
+
+    <div class="footer">
+      Authorized staff only • Access monitored
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("staffLoginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      // In real app → validate from backend
+      alert("Login successful! Redirecting to Counter Dashboard...");
+
+      // Redirect to counter dashboard
+      window.location.href = "counter.html";
+    });
+  </script>
+
+</body>
+</html>

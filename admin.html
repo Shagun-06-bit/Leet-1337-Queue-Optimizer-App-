@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard – Queue System</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---- SAME STYLES (UNCHANGED) ---- */
+*{box-sizing:border-box}
+body{margin:0;font-family:'Poppins',sans-serif;background:#f4f6fb;color:#222}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:#0f172a;color:#fff;padding:24px}
+.brand{font-size:22px;font-weight:700;margin-bottom:32px}
+.nav a{display:block;padding:12px 14px;margin-bottom:8px;text-decoration:none;color:#cbd5f5;border-radius:10px;font-size:14px}
+.nav a:hover,.nav a.active{background:#1e293b;color:#fff}
+.main{padding:28px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.header h1{font-size:26px;margin:0}
+.date{font-size:14px;color:#555}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:30px}
+.card{background:#fff;padding:20px;border-radius:18px;box-shadow:0 10px 25px rgba(0,0,0,0.06)}
+.card h3{margin:0 0 10px;font-size:14px;color:#555}
+.card .value{font-size:28px;font-weight:700}
+.section{background:#fff;padding:22px;border-radius:18px;box-shadow:0 10px 25px rgba(0,0,0,0.06);margin-bottom:26px}
+.section h2{font-size:18px;margin:0 0 16px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid #eee}
+th{color:#555;font-weight:600}
+.status{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.active{background:#dcfce7;color:#166534}
+.inactive{background:#fee2e2;color:#991b1b}
+.btn{padding:10px 16px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-size:14px;cursor:pointer}
+.btn.secondary{background:#e5e7eb;color:#111}
+.btn.small{padding:6px 12px;font-size:12px}
+.btn-group{display:flex;gap:10px;flex-wrap:wrap}
+input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #ddd;margin-bottom:12px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+</style>
+</head>
+
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand">QueueAdmin</div>
+  <nav class="nav">
+    <a class="active" href="#">Dashboard</a>
+    <a href="#counters">Counters</a>
+    <a href="#qr">QR Codes</a>
+    <a href="#analytics">Analytics</a>
+    <a href="#notifications">Notifications</a>
+    <a href="#privacy">Privacy</a>
+  </nav>
+</aside>
+
+<main class="main">
+<div class="header">
+  <h1>Admin Dashboard</h1>
+  <div class="date"></div>
+</div>
+
+<!-- OVERVIEW (UNCHANGED) -->
+<div class="grid">
+  <div class="card"><h3>Total Visitors</h3><div class="value">1248</div></div>
+  <div class="card"><h3>Avg Waiting</h3><div class="value">12 min</div></div>
+  <div class="card"><h3>Peak Hour</h3><div class="value">1–3 PM</div></div>
+  <div class="card"><h3>Efficiency</h3><div class="value">92%</div></div>
+</div>
+
+<!-- 🔥 UPDATED COUNTER MANAGEMENT -->
+<div class="section" id="counters">
+<h2>Counter Management</h2>
+
+<div class="btn-group" style="margin-bottom:14px">
+  <button class="btn" onclick="addCounter()">Add New Counter</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>Counter</th>
+  <th>Staff</th>
+  <th>Staff ID</th>
+  <th>Password</th>
+  <th>Status</th>
+  <th>Action</th>
+</tr>
+</thead>
+<tbody id="counterTable"></tbody>
+</table>
+</div>
+
+<!-- OTHER SECTIONS (UNCHANGED) -->
+<div class="section" id="qr">
+<h2>QR Code Management</h2>
+<button class="btn">Generate QR</button>
+</div>
+
+<div class="section" id="analytics">
+<h2>Analytics</h2>
+<p>Charts will appear here.</p>
+</div>
+
+<div class="section" id="notifications">
+<h2>Notifications</h2>
+<input type="number" placeholder="Queue limit">
+<button class="btn">Save</button>
+</div>
+
+<div class="section" id="privacy">
+<h2>Privacy</h2>
+<select><option>7 Days</option><option>30 Days</option></select>
+</div>
+
+</main>
+</div>
+
+<script>
+/* ---------- DATE ---------- */
+function updateDate(){
+  document.querySelector(".date").textContent =
+    new Date().toLocaleString("en-IN");
+}
+setInterval(updateDate,1000);updateDate();
+
+/* ---------- COUNTER MANAGEMENT LOGIC ---------- */
+let counters = JSON.parse(localStorage.getItem("counters")) || [];
+
+function saveCounters(){
+  localStorage.setItem("counters",JSON.stringify(counters));
+}
+
+function renderCounters(){
+  const table = document.getElementById("counterTable");
+  table.innerHTML = "";
+  counters.forEach((c,i)=>{
+    table.innerHTML += `
+    <tr>
+      <td>${c.name}</td>
+      <td>${c.staff}</td>
+      <td>${c.id}</td>
+      <td>${c.password}</td>
+      <td><span class="status ${c.active?"active":"inactive"}">${c.active?"Active":"Inactive"}</span></td>
+      <td>
+        <button class="btn small" onclick="toggleStatus(${i})">
+          ${c.active?"Deactivate":"Activate"}
+        </button>
+      </td>
+    </tr>`;
+  });
+}
+
+function addCounter(){
+  const name = prompt("Counter Name:");
+  const staff = prompt("Staff Name:");
+  const id = prompt("Staff Login ID:");
+  const password = prompt("Staff Password:");
+
+  if(!name || !staff || !id || !password){
+    alert("All fields required");
+    return;
+  }
+
+  counters.push({
+    name, staff, id, password, active:true
+  });
+
+  saveCounters();
+  renderCounters();
+}
+
+function toggleStatus(index){
+  counters[index].active = !counters[index].active;
+  saveCounters();
+  renderCounters();
+}
+
+renderCounters();
+</script>
+</body>
+</html>
