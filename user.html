@@ -266,60 +266,180 @@
     </div>
   </div>
 
-  <script>
-    function updateTime() {
-      document.getElementById('datetime').innerText = new Date().toLocaleString();
+<script>
+  const BASE_URL = "https://queue-optimizer-app.onrender.com";
+  const QUEUE_ID = "6963e88153b22c7a3b509fd3";
+
+  let pollingInterval = null;
+
+  function getLastStatus() {
+  return localStorage.getItem("lastStatus");
+}
+
+function setLastStatus(status) {
+  localStorage.setItem("lastStatus", status);
+}
+
+
+  function updateTime() {
+    document.getElementById("datetime").innerText =
+      new Date().toLocaleString();
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  const joinBtn = document.querySelector(".primary");
+  const refreshBtn = document.querySelector(".secondary");
+  const leaveBtn = document.querySelector(".danger");
+  const numberEl = document.querySelector(".number");
+  const labelEl = document.querySelector(".label");
+  const subInfo = document.querySelector(".subinfo");
+
+  let queueData = null;
+
+  function animateNumber() {
+    numberEl.style.animation = "none";
+    numberEl.offsetHeight;
+    numberEl.style.animation = "pop 0.6s ease";
+  }
+
+  // Get queueId from URL (QR scan)
+ 
+// JOIN QUEUE (REAL)
+
+  joinBtn.addEventListener("click", async () => {
+    joinBtn.innerText = "Joining...";
+    joinBtn.disabled = true;
+
+    try {
+          const res = await fetch(
+      `${BASE_URL}/api/queues/join`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          queueId: QUEUE_ID
+        })
+      }
+    );
+
+
+      const data = await res.json();
+      if (!data.success) throw new Error("Join failed");
+
+      // store ONLY queueEntryId
+      localStorage.setItem("tokenNumber", data.tokenNumber);
+      localStorage.setItem("queueId", QUEUE_ID);
+
+
+      // update UI
+      numberEl.innerText = data.yourToken ?? data.tokenNumber;
+      labelEl.innerText = "Your Token Number";
+      subInfo.innerHTML = `
+        <span>${data.position} in queue</span>
+        <span>Est wait: ${data.estimatedWait} min</span>
+      `;
+
+      animateNumber();
+      startPolling();
+      joinBtn.innerText = "Joined";
+
+    } catch (err) {
+      alert(err.message);
+      joinBtn.innerText = "Join Queue";
+      joinBtn.disabled = false;
     }
-    updateTime();
-    setInterval(updateTime, 1000);
+  });
 
-    const joinBtn = document.querySelector('.primary');
-    const refreshBtn = document.querySelector('.secondary');
-    const leaveBtn = document.querySelector('.danger');
-    const numberEl = document.querySelector('.number');
-    const labelEl = document.querySelector('.label');
-    const subInfo = document.querySelector('.subinfo');
+  function startPolling() {
+  if (pollingInterval) clearInterval(pollingInterval);
+  pollingInterval = setInterval(fetchStatus, 5000);
+}
 
-    let inQueue = false;
-    let position = null;
 
-    function animateNumber() {
-      numberEl.style.animation = 'none';
-      numberEl.offsetHeight;
-      numberEl.style.animation = 'pop 0.6s ease';
+async function fetchStatus() {
+  const tokenNumber = localStorage.getItem("tokenNumber");
+  const queueId = localStorage.getItem("queueId");
+
+  if (!tokenNumber || !queueId) return;
+
+  try {
+    const res = await fetch(
+      `${BASE_URL}/api/queues/${queueId}/token/${tokenNumber}/status`
+    );
+
+    const data = await res.json();
+    if (!data.success) return;
+
+    const lastStatus = getLastStatus();
+
+//  BLOCK premature COMPLETED
+    if (data.status === "COMPLETED" && lastStatus !== "SERVING") {
+      console.warn("Blocked premature COMPLETED status");
+      return;
     }
 
-    joinBtn.addEventListener('click', () => {
-      if (!inQueue) {
-        inQueue = true;
-        position = Math.floor(Math.random() * 10) + 3;
-        numberEl.innerText = position;
-        labelEl.innerText = 'Your position in queue';
-        subInfo.innerHTML = `<span>${position - 1} people ahead</span><span>~${position * 2} min wait</span>`;
-        animateNumber();
-      }
-    });
+    numberEl.innerText = tokenNumber;
+    labelEl.innerText = data.status;
+    setLastStatus(data.status);
 
-    refreshBtn.addEventListener('click', () => {
-      if (inQueue && position > 1) {
-        position--;
-        numberEl.innerText = position;
-        subInfo.innerHTML = `<span>${position - 1} people ahead</span><span>~${position * 2} min wait</span>`;
-        animateNumber();
-      }
-    });
+    subInfo.innerHTML = `
+      <span>Position: ${data.position}</span>
+      <span>Serving: ${data.currentServing}</span>
+    `;
 
-    leaveBtn.addEventListener('click', () => {
-      if (inQueue) {
-        inQueue = false;
-        position = null;
-        numberEl.innerText = '-';
-        labelEl.innerText = 'Not in queue';
-        subInfo.innerHTML = `<span>—</span><span>—</span>`;
-        animateNumber();
-      }
-    });
-  </script>
+
+    animateNumber();
+
+    if (data.status === "COMPLETED" || data.status === "CANCELLED") {
+      clearInterval(pollingInterval);
+      localStorage.removeItem("tokenNumber");
+      localStorage.removeItem("queueId");
+      joinBtn.innerText = "Join Queue";
+      joinBtn.disabled = false;
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+
+
+  // REFRESH STATUS (REAL)
+
+ refreshBtn.addEventListener("click", () => {
+  fetchStatus();
+});
+
+  // LEAVE QUEUE (LOCAL EXIT)
+  leaveBtn.addEventListener("click", () => {
+    localStorage.removeItem("tokenNumber");
+    localStorage.removeItem("queueId");
+    localStorage.removeItem("lastStatus");
+
+
+
+    numberEl.innerText = "-";
+    labelEl.innerText = "Not in queue";
+    subInfo.innerHTML = `<span>—</span><span>—</span>`;
+    joinBtn.innerText = "Join Queue";
+    joinBtn.disabled = false;
+
+    animateNumber();
+  });
+
+  console.log(
+    "%cQueueAdmin – User Queue Connected",
+    "color:#22c55e;font-weight:bold;"
+  );
+
+
+
+
+</script>
+
 
 </body>
 </html>
