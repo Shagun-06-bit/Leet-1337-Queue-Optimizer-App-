@@ -37,6 +37,8 @@ th{color:#555;font-weight:600}
 input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #ddd;margin-bottom:12px}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
 </head>
 
 <body>
@@ -75,6 +77,14 @@ input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d
   <button class="btn" onclick="addCounter()">Add New Counter</button>
 </div>
 
+<div class="btn-group" style="margin-bottom:14px">
+  <button class="btn secondary" onclick="serveNext()">Serve Next</button>
+  <div id="currentServing" style="align-self:center;font-weight:600;">
+    Currently Serving: --
+  </div>
+</div>
+
+
 <table>
 <thead>
 <tr>
@@ -93,7 +103,8 @@ input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d
 <!-- OTHER SECTIONS (UNCHANGED) -->
 <div class="section" id="qr">
 <h2>QR Code Management</h2>
-<button class="btn">Generate QR</button>
+<button class="btn" onclick="generateQR()">Generate QR</button>
+<div id="qrBox" style="margin-top:16px;"></div>
 </div>
 
 <div class="section" id="analytics">
@@ -116,6 +127,16 @@ input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d
 </div>
 
 <script>
+
+  // 🔐 CONFIG (EDIT THESE)
+const API_BASE = "https://queue-optimizer-app.onrender.com/api";
+const QUEUE_ID = "6963e88153b22c7a3b509fd3";
+
+// JWT should already be stored after admin login
+const ADMIN_TOKEN = "DEMO_MODE";
+
+
+
 /* ---------- DATE ---------- */
 function updateDate(){
   document.querySelector(".date").textContent =
@@ -176,6 +197,58 @@ function toggleStatus(index){
 }
 
 renderCounters();
+
+async function serveNext() {
+  // if (!ADMIN_TOKEN) {
+  //   alert("Admin not authenticated");
+  //   return;
+  // }
+
+  try {
+    const res = await fetch(
+      `${API_BASE}/queues/${QUEUE_ID}/serve-next`,
+      {
+        method: "PATCH",
+        // headers: {
+        //   // "Content-Type": "application/json",
+        //   "Authorization": `Bearer ${ADMIN_TOKEN}`
+        // }
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Failed to serve next");
+      return;
+    }
+
+    // Update UI
+    document.getElementById("currentServing").textContent =
+      `Currently Serving: ${data.currentServingToken}`;
+
+    console.log("Serve Next success:", data);
+  } catch (err) {
+    console.error("Serve Next error:", err);
+    alert("Server error");
+  }
+}
+
+function generateQR() {
+  const qrBox = document.getElementById("qrBox");
+  qrBox.innerHTML = "";
+
+  const url = `${window.location.origin}/user.html?queueId=${QUEUE_ID}`;
+  
+
+  new QRCode(qrBox, {
+    text: url,
+    width: 180,
+    height: 180
+  });
+}
+
+
 </script>
 </body>
 </html>
